@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 45f2a81427488d15b3ddb03bd33224f042458a53444d275aa016ad1493f4b4b5
+-- hash: 5d8150cc3f88bc4898a529d9451733581ea31fc141b38d0f4c25f2b0fcc92860
 
 name:           cs-5e
 version:        0.1.0.0
@@ -27,13 +27,14 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Ability
   other-modules:
       Paths_cs_5e
   hs-source-dirs:
       src
   build-depends:
       base >=4.7 && <5
+    , containers
   default-language: Haskell2010
 
 executable cs-5e-exe
@@ -45,6 +46,7 @@ executable cs-5e-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , containers
     , cs-5e
   default-language: Haskell2010
 
@@ -58,5 +60,6 @@ test-suite cs-5e-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , containers
     , cs-5e
   default-language: Haskell2010
