@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 5d8150cc3f88bc4898a529d9451733581ea31fc141b38d0f4c25f2b0fcc92860
+-- hash: 5b8b3a21de34c988096c2cff4550d5d15c4042a2cee10c853563247f1dea3cab
 
 name:           cs-5e
 version:        0.1.0.0
@@ -28,6 +28,7 @@ source-repository head
 library
   exposed-modules:
       Ability
+      Skill
   other-modules:
       Paths_cs_5e
   hs-source-dirs:
