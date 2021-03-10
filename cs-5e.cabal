@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 5b8b3a21de34c988096c2cff4550d5d15c4042a2cee10c853563247f1dea3cab
+-- hash: ae5ae892e27de8481ef2208cdd9ff67f939fdb5e05ccd816774bd341da49d3f2
 
 name:           cs-5e
 version:        0.1.0.0
@@ -28,6 +28,7 @@ source-repository head
 library
   exposed-modules:
       Ability
+      PrettyPrint
       Skill
   other-modules:
       Paths_cs_5e
