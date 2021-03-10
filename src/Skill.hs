@@ -1,6 +1,6 @@
 module Skill ( SkillType(..)
              , Skill(..)
-             , Abilities
+             , Skills
              , emptySkills
              , getSkill
              , becomeProficient
@@ -22,6 +22,7 @@ data SkillType = Acrobatics
                | History
                | Insight
                | Intimidation
+               | Investigation
                | Medicine
                | Nature
                | Perception
@@ -72,7 +73,7 @@ becomeProficient s = Skills . Map.adjust f s . getSkills where
   f s = s
 
 emptySkills :: Skills
-emptySkills = Skills . Map.fromList . map (toEnum &&& toSkill . toMod . toEnum) $ [0..16] where
+emptySkills = Skills . Map.fromList . map (toEnum &&& toSkill . toMod . toEnum) $ [0..17] where
   toSkill :: AbilityType -> Skill
   toSkill a = Skill a False False
 
@@ -85,6 +86,7 @@ emptySkills = Skills . Map.fromList . map (toEnum &&& toSkill . toMod . toEnum) 
   toMod History = Intelligence
   toMod Insight = Wisdom
   toMod Intimidation = Charisma
+  toMod Investigation = Intelligence
   toMod Medicine = Wisdom
   toMod Nature = Intelligence
   toMod Perception = Wisdom
