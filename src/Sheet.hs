@@ -18,6 +18,7 @@ instance PrettyPrint Sheet where
 
 foo :: Sheet
 foo = Sheet "Elwe" as ss 3 where
+  -- need to introduce some list constructors
   as = emptyAbilities
        & updateAbility Strength (AbilityValue 10)
        & updateAbility Dexterity (AbilityValue 20)
@@ -40,7 +41,11 @@ foo = Sheet "Elwe" as ss 3 where
 
 calcSkillMod :: SkillType -> Sheet -> Int
 calcSkillMod s =  f .  ((abilities &&& snd . (getSkill s) . skills) &&& p) where
+  toAbilityMod :: AbilityType -> Abilities -> Int
+  toAbilityMod = ((getAbilityMod . snd . snd) .) . getAbility
+
   f :: ((Abilities, Skill), Int) -> Int
-  f ((a, (Skill at True True)), p) = ((getAbilityMod . snd . snd . getAbility at) a) + 2 * p
-  f ((a, (Skill at True False)), p) = ((getAbilityMod . snd . snd . getAbility at) a) + p
-  f ((a, (Skill at False _)), _) = ((getAbilityMod . snd . snd . getAbility at) a)
+  -- Boolean blindness -.-
+  f ((a, (Skill at True True)), p)  = toAbilityMod at a + 2 * p
+  f ((a, (Skill at True False)), p) = toAbilityMod at a + p
+  f ((a, (Skill at False _)), _)    = toAbilityMod at a
