@@ -19,13 +19,7 @@ instance PrettyPrint Sheet where
 foo :: Sheet
 foo = Sheet "Elwe" as ss 3 where
   -- need to introduce some list constructors
-  as = emptyAbilities
-       & updateAbility Strength (AbilityValue 10)
-       & updateAbility Dexterity (AbilityValue 20)
-       & updateAbility Constitution (AbilityValue 16)
-       & updateAbility Intelligence (AbilityValue 13)
-       & updateAbility Wisdom (AbilityValue 13)
-       & updateAbility Charisma (AbilityValue 17)
+  as = toAbilities [10, 20, 16, 13, 13, 17]
   ss = emptySkills
        & becomeProficient Acrobatics
        & becomeProficient Deception

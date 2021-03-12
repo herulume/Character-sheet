@@ -5,6 +5,8 @@ module Ability ( AbilityType(..)
                , emptyAbilities
                , getAbility
                , updateAbility
+               , updateAbilities
+               , toAbilities
                ) where
 
 import Control.Arrow
@@ -55,7 +57,15 @@ getAbility a = ((,) a) . (Map.! a) . getAbilities
 updateAbility :: AbilityType -> AbilityValue -> Abilities -> Abilities
 updateAbility a av = Abilities . Map.insert a (toAbilityPair av) . getAbilities
 
+updateAbilities :: [(AbilityType, AbilityValue)] -> Abilities -> Abilities
+updateAbilities = flip (foldr (uncurry updateAbility))
+
 emptyAbilities :: Abilities
 emptyAbilities = Abilities . Map.fromList . map (toEnum &&& toAbilityPair . toValue) $ [0..5] where
   toValue :: Int -> AbilityValue
   toValue = AbilityValue . const 0
+
+-- Assumes the Strength Dexterity Constitution Intelligence Wisdom Charisma order
+-- If values are missing, 0 is the default
+toAbilities :: [Int] -> Abilities
+toAbilities = flip updateAbilities emptyAbilities . zip (map toEnum [0..5]) . map AbilityValue
