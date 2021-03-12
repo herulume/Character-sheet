@@ -9,6 +9,7 @@ module Skill ( SkillType(..)
              , becomeExpert
              , becomeProficientL
              , becomeExpertL
+             , skillsToList
              ) where
 
 import Control.Arrow
@@ -57,17 +58,20 @@ data Skill = Skill { abilityModifier :: AbilityType
                    } deriving (Eq, Ord, Read, Show)
 
 instance PrettyPrint Skill where
-  pp (Skill am _ Expert)      = "(" ++ pp am ++ ") *"
-  pp (Skill am Proficient NotExpert)  = "(" ++ pp am ++ ") +"
+  pp (Skill am _ Expert)                = "(" ++ pp am ++ ") *"
+  pp (Skill am Proficient NotExpert)    = "(" ++ pp am ++ ") +"
   pp (Skill am NotProficient NotExpert) = "(" ++ pp am ++ ")"
 
 newtype Skills = Skills { getSkills :: Map SkillType Skill }
   deriving (Eq, Ord, Read, Show)
 
 instance PrettyPrint Skills where
-  pp = unlines . map toPP .  Map.toList . getSkills where
+  pp = unlines . map toPP . skillsToList  where
     toPP ::  (SkillType, Skill) -> String
-    toPP (st, s) = pp st ++ " " ++ pp s
+    toPP (st, s) = unwords [pp st,  pp s]
+
+skillsToList :: Skills -> [(SkillType, Skill)]
+skillsToList = Map.toList . getSkills
 
 getSkill :: SkillType -> Skills -> (SkillType, Skill)
 getSkill s = ((,) s) . (Map.! s) . getSkills

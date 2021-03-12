@@ -14,7 +14,9 @@ data Sheet = Sheet { name :: String
                    } deriving (Eq, Ord, Read, Show)
 
 instance PrettyPrint Sheet where
-  pp (Sheet n a s _) = n ++ "\nAbilities:\n" ++ pp a ++ "\nSkills:\n" ++ pp s
+  pp sh@(Sheet n a s _) = n ++ "\nAbilities:\n" ++ pp a ++ "\nSkills:\n" ++ (unlines . map (toPP sh) . skillsToList) s where
+    toPP :: Sheet -> (SkillType, Skill) -> String
+    toPP sh' (st, sk) = unwords [pp st, pp sk, show (calcSkillMod st sh')]
 
 foo :: Sheet
 foo = Sheet "Elwe" as ss 3 where
@@ -32,4 +34,4 @@ calcSkillMod s =  toValue .  ((abilities &&& snd . (getSkill s) . skills) &&& p)
   toValue :: ((Abilities, Skill), Int) -> Int
   toValue ((a, (Skill at Proficient Expert)), pv)    = toAbilityMod at a + 2 * pv
   toValue ((a, (Skill at Proficient NotExpert)), pv) = toAbilityMod at a + pv
-  toValue ((a, (Skill at NotProficient _)), _)      = toAbilityMod at a
+  toValue ((a, (Skill at NotProficient _)), _)       = toAbilityMod at a
