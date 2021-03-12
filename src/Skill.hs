@@ -1,6 +1,8 @@
 module Skill ( SkillType(..)
              , Skill(..)
              , Skills
+             , Proficiency(..)
+             , Expertise(..)
              , emptySkills
              , getSkill
              , becomeProficient
@@ -39,15 +41,23 @@ instance PrettyPrint SkillType where
   pp SleightOfHand = "Sleight of Hand"
   pp s = show s
 
+data Proficiency = Proficient
+                 | NotProficient
+                 deriving (Eq, Ord, Read, Show)
+
+data Expertise = Expert
+               | NotExpert
+                 deriving (Eq, Ord, Read, Show)
+
 data Skill = Skill { abilityModifier :: AbilityType
-                   , proficient :: Bool
-                   , expertise :: Bool
+                   , proficient :: Proficiency
+                   , expert :: Expertise
                    } deriving (Eq, Ord, Read, Show)
 
 instance PrettyPrint Skill where
-  pp (Skill am _ True)      = "(" ++ pp am ++ ") *"
-  pp (Skill am True False)  = "(" ++ pp am ++ ") +"
-  pp (Skill am False False) = "(" ++ pp am ++ ")"
+  pp (Skill am _ Expert)      = "(" ++ pp am ++ ") *"
+  pp (Skill am Proficient NotExpert)  = "(" ++ pp am ++ ") +"
+  pp (Skill am NotProficient NotExpert) = "(" ++ pp am ++ ")"
 
 newtype Skills = Skills { getSkills :: Map SkillType Skill }
   deriving (Eq, Ord, Read, Show)
@@ -63,19 +73,19 @@ getSkill s = ((,) s) . (Map.! s) . getSkills
 becomeExpert :: SkillType -> Skills -> Skills
 becomeExpert s = Skills . Map.adjust f s . getSkills where
   f :: Skill -> Skill
-  f (Skill am True _) = Skill am True True
+  f (Skill am Proficient _) = Skill am Proficient Expert
   f s = s
 
 becomeProficient :: SkillType -> Skills -> Skills
 becomeProficient s = Skills . Map.adjust f s . getSkills where
   f :: Skill -> Skill
-  f (Skill am False False) = Skill am True False
+  f (Skill am NotProficient NotExpert) = Skill am Proficient NotExpert
   f s = s
 
 emptySkills :: Skills
 emptySkills = Skills . Map.fromList . map (toEnum &&& toSkill . toMod . toEnum) $ [0..17] where
   toSkill :: AbilityType -> Skill
-  toSkill a = Skill a False False
+  toSkill a = Skill a NotProficient NotExpert
 
   toMod :: SkillType -> AbilityType
   toMod Acrobatics = Dexterity

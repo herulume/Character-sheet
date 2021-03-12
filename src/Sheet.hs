@@ -14,7 +14,7 @@ data Sheet = Sheet { name :: String
                    } deriving (Eq, Ord, Read, Show)
 
 instance PrettyPrint Sheet where
-  pp (Sheet n a s _) = n ++ "\nAbilities:\n" ++ pp a ++ "\n\n Skills:\n" ++ pp s
+  pp (Sheet n a s _) = n ++ "\nAbilities:\n" ++ pp a ++ "\nSkills:\n" ++ pp s
 
 foo :: Sheet
 foo = Sheet "Elwe" as ss 3 where
@@ -34,12 +34,11 @@ foo = Sheet "Elwe" as ss 3 where
        & becomeExpert Stealth
 
 calcSkillMod :: SkillType -> Sheet -> Int
-calcSkillMod s =  f .  ((abilities &&& snd . (getSkill s) . skills) &&& p) where
+calcSkillMod s =  toValue .  ((abilities &&& snd . (getSkill s) . skills) &&& p) where
   toAbilityMod :: AbilityType -> Abilities -> Int
   toAbilityMod = ((getAbilityMod . snd . snd) .) . getAbility
 
-  f :: ((Abilities, Skill), Int) -> Int
-  -- Boolean blindness -.-
-  f ((a, (Skill at True True)), p)  = toAbilityMod at a + 2 * p
-  f ((a, (Skill at True False)), p) = toAbilityMod at a + p
-  f ((a, (Skill at False _)), _)    = toAbilityMod at a
+  toValue :: ((Abilities, Skill), Int) -> Int
+  toValue ((a, (Skill at Proficient Expert)), p)    = toAbilityMod at a + 2 * p
+  toValue ((a, (Skill at Proficient NotExpert)), p) = toAbilityMod at a + p
+  toValue ((a, (Skill at NotProficient _)), _)      = toAbilityMod at a
