@@ -20,7 +20,6 @@ instance PrettyPrint Sheet where
 
 foo :: Sheet
 foo = Sheet "Elwe" as ss 3 where
-  -- need to introduce some list constructors
   as = toAbilities [10, 20, 16, 13, 13, 17]
   ss = emptySkills
        & becomeProficientL [Acrobatics, Deception, Intimidation, Investigation, Perception, Persuasion, SleightOfHand, Stealth]
