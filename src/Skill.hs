@@ -7,6 +7,8 @@ module Skill ( SkillType(..)
              , getSkill
              , becomeProficient
              , becomeExpert
+             , becomeProficientL
+             , becomeExpertL
              ) where
 
 import Control.Arrow
@@ -74,13 +76,19 @@ becomeExpert :: SkillType -> Skills -> Skills
 becomeExpert s = Skills . Map.adjust f s . getSkills where
   f :: Skill -> Skill
   f (Skill am Proficient _) = Skill am Proficient Expert
-  f s = s
+  f x = x
+
+becomeExpertL :: [SkillType] -> Skills -> Skills
+becomeExpertL = flip (foldr becomeExpert)
 
 becomeProficient :: SkillType -> Skills -> Skills
 becomeProficient s = Skills . Map.adjust f s . getSkills where
   f :: Skill -> Skill
   f (Skill am NotProficient NotExpert) = Skill am Proficient NotExpert
-  f s = s
+  f x = x
+
+becomeProficientL :: [SkillType] -> Skills -> Skills
+becomeProficientL = flip (foldr becomeProficient)
 
 emptySkills :: Skills
 emptySkills = Skills . Map.fromList . map (toEnum &&& toSkill . toMod . toEnum) $ [0..17] where

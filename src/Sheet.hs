@@ -21,17 +21,8 @@ foo = Sheet "Elwe" as ss 3 where
   -- need to introduce some list constructors
   as = toAbilities [10, 20, 16, 13, 13, 17]
   ss = emptySkills
-       & becomeProficient Acrobatics
-       & becomeProficient Deception
-       & becomeProficient Intimidation
-       & becomeProficient Investigation
-       & becomeProficient Perception
-       & becomeProficient Persuasion
-       & becomeProficient SleightOfHand
-       & becomeProficient Stealth
-       & becomeExpert Investigation
-       & becomeExpert Perception
-       & becomeExpert Stealth
+       & becomeProficientL [Acrobatics, Deception, Intimidation, Investigation, Perception, Persuasion, SleightOfHand, Stealth]
+       & becomeExpertL [Investigation, Perception, Stealth]
 
 calcSkillMod :: SkillType -> Sheet -> Int
 calcSkillMod s =  toValue .  ((abilities &&& snd . (getSkill s) . skills) &&& p) where
@@ -39,6 +30,6 @@ calcSkillMod s =  toValue .  ((abilities &&& snd . (getSkill s) . skills) &&& p)
   toAbilityMod = ((getAbilityMod . snd . snd) .) . getAbility
 
   toValue :: ((Abilities, Skill), Int) -> Int
-  toValue ((a, (Skill at Proficient Expert)), p)    = toAbilityMod at a + 2 * p
-  toValue ((a, (Skill at Proficient NotExpert)), p) = toAbilityMod at a + p
+  toValue ((a, (Skill at Proficient Expert)), pv)    = toAbilityMod at a + 2 * pv
+  toValue ((a, (Skill at Proficient NotExpert)), pv) = toAbilityMod at a + pv
   toValue ((a, (Skill at NotProficient _)), _)      = toAbilityMod at a
